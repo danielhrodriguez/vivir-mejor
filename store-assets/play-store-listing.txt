@@ -1,0 +1,138 @@
+# 📱 FICHA DE GOOGLE PLAY STORE — Vivir Mejor
+# Copiá cada sección en el campo correspondiente de Play Console
+
+# ══════════════════════════════════════════════════════════════════
+# INFORMACIÓN BÁSICA
+# ══════════════════════════════════════════════════════════════════
+
+NOMBRE DE LA APP (máx. 30 caracteres):
+Vivir Mejor – Hábitos Diarios
+
+DESARROLLADOR:
+Daniel Horacio  (o el nombre que elegiste al registrarte)
+
+CATEGORÍA PRINCIPAL:
+Salud y bienestar
+
+CATEGORÍA SECUNDARIA:
+Estilo de vida
+
+CLASIFICACIÓN DE CONTENIDO:
+Apto para todos (PEGI 3 / Everyone)
+
+PRECIO:
+Gratuito (con compras integradas)
+
+
+# ══════════════════════════════════════════════════════════════════
+# DESCRIPCIÓN CORTA (máx. 80 caracteres)
+# ══════════════════════════════════════════════════════════════════
+
+Registrá tus hábitos diarios: sueño, agua, ejercicio y medicamentos.
+
+
+# ══════════════════════════════════════════════════════════════════
+# DESCRIPCIÓN LARGA (máx. 4000 caracteres)
+# ══════════════════════════════════════════════════════════════════
+
+🌿 VIVIR MEJOR — Tu compañero de hábitos diarios
+
+¿Querés mejorar tu calidad de vida pero no sabés por dónde empezar? Vivir Mejor es la app que te ayuda a construir hábitos saludables de forma simple, visual y motivadora.
+
+Diseñada especialmente para adultos de 30 a 50 años que buscan una vida más equilibrada, sin complicaciones tecnológicas.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✨ ¿QUÉ PODÉS HACER CON VIVIR MEJOR?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+😴 SUEÑO
+Registrá tu hora de dormir y despertar. La app calcula automáticamente tus horas de descanso y te muestra si estás dentro del rango recomendado de 7 a 9 horas. Analizá tus patrones con gráficos semanales.
+
+💧 HIDRATACIÓN
+Llevá el control de cuántos vasos de agua tomás por día. Tocás el botón y registrás cada vaso. Recordatorios automáticos para que no te olvides de hidratarte.
+
+🏃 EJERCICIO
+Marcá los días que entrenaste y qué actividad hiciste: caminata, yoga, gym, bici, natación o running. Visualizá tu constancia semanal de un vistazo.
+
+😊 ESTADO DE ÁNIMO
+Check-in emocional diario en menos de 1 minuto. Elegí tu emoji, agregá una nota opcional y llevá un registro de cómo te sentís cada día.
+
+💊 MEDICAMENTOS
+Registrá todos tus medicamentos con nombre, dosis y horarios. Marcá cada toma del día y recibí recordatorios para no olvidarte de ninguna. Ideal para llevar un control preciso que podés compartir con tu médico.
+
+📊 ESTADÍSTICAS
+Gráficos claros y visuales de tu progreso semanal. Mirá de un vistazo cómo evolucionan tus hábitos.
+
+🔔 RECORDATORIOS
+Notificaciones personalizadas para cada hábito. La app te avisa a la hora que vos elegís, aunque la tengas cerrada.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🆓 PLAN BÁSICO — GRATIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ 3 hábitos simultáneos
+✓ Estadísticas de los últimos 7 días
+✓ Recordatorios básicos
+✓ Registro de medicamentos
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⭐ PLAN PREMIUM — $5 USD/MES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Hábitos ilimitados
+✓ Estadísticas históricas completas
+✓ Exportación de datos en PDF y CSV
+✓ Recordatorios personalizados ilimitados
+✓ Sin publicidad
+✓ Sincronización en la nube
+✓ Reporte para compartir con tu médico
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔒 TUS DATOS, SEGUROS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Vivir Mejor usa Firebase de Google para proteger tus datos. Tu información personal nunca se comparte con terceros ni se usa para publicidad. Podés exportar o eliminar tus datos cuando quieras.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📱 SIMPLE Y SIN COMPLICACIONES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Interfaz clara, colores suaves y navegación intuitiva. Sin configuraciones complejas. Instalás y empezás a usar en menos de 2 minutos.
+
+¡Descargala gratis y empezá hoy tu camino hacia una vida más saludable! 🌿
+
+
+# ══════════════════════════════════════════════════════════════════
+# PALABRAS CLAVE (para posicionamiento en búsquedas)
+# ══════════════════════════════════════════════════════════════════
+
+hábitos saludables, bienestar, sueño, hidratación, ejercicio,
+medicamentos, recordatorio medicamentos, tracker hábitos,
+salud mental, bienestar mental, registro sueño, control agua,
+diario emocional, estado de ánimo, vida saludable, rutina diaria,
+wellness, health tracker, hábitos diarios, 30 días hábitos
+
+
+# ══════════════════════════════════════════════════════════════════
+# POLÍTICA DE PRIVACIDAD
+# (Publicala en Netlify como /privacy.html y pegá la URL en Play Console)
+# ══════════════════════════════════════════════════════════════════
+
+URL de política de privacidad:
+https://mellow-cactus-c4edce.netlify.app/privacy.html
+
+
+# ══════════════════════════════════════════════════════════════════
+# CONTACTO
+# ══════════════════════════════════════════════════════════════════
+
+Email de soporte: (tu email personal o uno dedicado a la app)
+Sitio web: https://mellow-cactus-c4edce.netlify.app
+
+
+# ══════════════════════════════════════════════════════════════════
+# NOTAS PARA LA REVISIÓN DE GOOGLE
+# (campo "Notas para el revisor" en Play Console)
+# ══════════════════════════════════════════════════════════════════
+
+Esta es una app de seguimiento de hábitos saludables para adultos.
+No requiere permisos especiales más allá de notificaciones.
+Login con Google o email/contraseña via Firebase Authentication.
+Las compras integradas (Plan Premium $5 USD/mes) se gestionan
+externamente via Mercado Pago. No hay contenido para menores.
