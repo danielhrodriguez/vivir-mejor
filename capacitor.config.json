@@ -1,0 +1,23 @@
+{
+  "appId": "com.vivirbetter.app",
+  "appName": "Vivir Mejor",
+  "webDir": "src",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#7BAE8E",
+      "sound": "beep.wav"
+    },
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#F7FAF8",
+      "androidSplashResourceName": "splash",
+      "showSpinner": false
+    }
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#F7FAF8"
+  }
+}
