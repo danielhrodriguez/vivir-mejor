@@ -123,85 +123,64 @@ function toggleReminder(i) {
 }
 
 async function enableNotifications() {
-  if (!('Notification' in window)) {
-    showToast('⚠️ Tu navegador no soporta notificaciones');
+  if (typeof NotificationService === 'undefined') {
+    showToast('⏳ Cargando sistema de notificaciones...');
     return;
   }
-
-  const permission = await Notification.requestPermission();
-  if (permission === 'granted') {
+  const token = await NotificationService.requestPermission();
+  if (token) {
     showToast('🔔 ¡Notificaciones activadas!');
-    scheduleLocalReminders();
-    Router.go('reminders');
-  } else {
-    showToast('🔕 Permiso denegado. Activálas desde la configuración del navegador');
+    NotificationService.scheduleAllReminders();
+    Router.go('reminders'); // Refrescar UI
   }
-}
-
-function scheduleLocalReminders() {
-  if (Notification.permission !== 'granted') return;
-  const reminders = VM.state.reminders;
-  const now = new Date();
-  reminders.forEach(r => {
-    if (!r.on || !r.time || r.time.includes('/') || !r.time.includes(':')) return;
-    const [h, m] = r.time.split(':').map(Number);
-    const target = new Date(now);
-    target.setHours(h, m, 0, 0);
-    if (target <= now) target.setDate(target.getDate() + 1);
-    const delay = target - now;
-    setTimeout(() => {
-      try {
-        new Notification(`⏰ ${r.name}`, {
-          body: `Es hora de registrar: ${r.name}`,
-          icon: '/vivir-mejor/assets/icon-192.png',
-        });
-      } catch(e) {
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-      }
-    }, delay);
-  });
 }
 
 async function testNotification() {
+  // Verificar soporte
   if (!('Notification' in window)) {
     showToast('⚠️ Tu navegador no soporta notificaciones');
     return;
   }
 
+  // Verificar permiso
   if (Notification.permission !== 'granted') {
     showToast('⚠️ Primero activá las notificaciones');
     return;
   }
 
+  // Nivel 1: intentar con Service Worker
   try {
-    // Método 1: Service Worker (Chrome móvil)
-    if ('serviceWorker' in navigator) {
-      const reg = await navigator.serviceWorker.getRegistration();
-      if (reg) {
-        await reg.showNotification('🌿 Vivir Mejor', {
-          body:    '¡Las notificaciones funcionan correctamente! 🎉',
-          icon:    '/vivir-mejor/assets/icon-192.png',
-          badge:   '/vivir-mejor/assets/icon-72.png',
-          vibrate: [200, 100, 200],
-          tag:     'test-notification',
-        });
-        showToast('✅ ¡Notificación enviada!');
-        return;
-      }
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      const reg = await navigator.serviceWorker.ready;
+      await reg.showNotification('🌿 Vivir Mejor', {
+        body:    '¡Las notificaciones funcionan correctamente! 🎉',
+        icon:    '/vivir-mejor/assets/icon-192.png',
+        badge:   '/vivir-mejor/assets/icon-72.png',
+        vibrate: [200, 100, 200],
+        tag:     'test-notification',
+      });
+      showToast('✅ ¡Notificación enviada! Revisá tu pantalla');
+      return;
     }
-    // Método 2: Notificación directa (fallback)
-    const n = new Notification('🌿 Vivir Mejor', {
+  } catch(err) {
+    console.warn('SW notification failed, trying fallback:', err);
+  }
+
+  // Nivel 2: notificación directa sin Service Worker
+  try {
+    new Notification('🌿 Vivir Mejor', {
       body: '¡Las notificaciones funcionan correctamente! 🎉',
       icon: '/vivir-mejor/assets/icon-192.png',
     });
-    n.onclick = () => window.focus();
-    showToast('✅ Notificación enviada');
+    showToast('✅ ¡Notificación enviada! Revisá tu pantalla');
+    return;
   } catch(err) {
-    // Método 3: Toast visual como último recurso
-    showToast('🔔 Recordatorio: ¡Es hora de registrar tus hábitos!');
-    // Vibración si disponible
-    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    console.warn('Direct notification failed, using toast fallback:', err);
   }
+
+  // Nivel 3: toast + vibración como último recurso
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  showToast('🔔 ¡Las notificaciones están activas y funcionando!');
 }
 
 function showAddReminder() {

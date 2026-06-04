@@ -8,7 +8,7 @@
 Router.register('checkout', () => `
   <div class="header">
     <div style="display:flex;align-items:center">
-      <button class="header-back" onclick="Router.go('premium')">←</button>
+      <button class="header-back" onclick="Router.go('premium')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
       <div>
         <div class="header-title">Suscripción Premium</div>
         <div class="header-sub">Paso 1 de 2 – Tus datos de contacto</div>
