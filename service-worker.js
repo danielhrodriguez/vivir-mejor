@@ -23,8 +23,8 @@ messaging.onBackgroundMessage(payload => {
   const { title, body, icon } = payload.notification;
   self.registration.showNotification(title, {
     body,
-    icon:  icon || '/assets/icon-192.png',
-    badge: '/assets/icon-72.png',
+    icon:  icon || '/vivir-mejor/assets/icon-192.png',
+    badge: '/vivir-mejor/assets/icon-72.png',
     vibrate: [200, 100, 200],
     data:  payload.data || {},
     actions: [
@@ -57,7 +57,7 @@ const ASSETS = [
   '/js/pages/sleep.js', '/js/pages/water.js', '/js/pages/exercise.js',
   '/js/pages/mood.js', '/js/pages/stats.js', '/js/pages/reminders.js',
   '/js/pages/premium.js', '/js/pages/checkout.js', '/js/pages/waiting.js',
-  '/js/pages/admin.js', '/assets/icon-192.png', '/assets/icon-512.png',
+  '/js/pages/admin.js', '/vivir-mejor/assets/icon-192.png', '/assets/icon-512.png',
 ];
 
 self.addEventListener('install',  e => { e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS))); self.skipWaiting(); });

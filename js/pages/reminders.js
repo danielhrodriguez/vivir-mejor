@@ -123,55 +123,84 @@ function toggleReminder(i) {
 }
 
 async function enableNotifications() {
-  if (typeof NotificationService === 'undefined') {
-    showToast('⏳ Cargando sistema de notificaciones...');
-    return;
-  }
-  const token = await NotificationService.requestPermission();
-  if (token) {
-    showToast('🔔 ¡Notificaciones activadas!');
-    NotificationService.scheduleAllReminders();
-    Router.go('reminders'); // Refrescar UI
-  }
-}
-
-async function testNotification() {
-  // Verificar soporte
   if (!('Notification' in window)) {
     showToast('⚠️ Tu navegador no soporta notificaciones');
     return;
   }
 
-  // Verificar permiso
+  const permission = await Notification.requestPermission();
+  if (permission === 'granted') {
+    showToast('🔔 ¡Notificaciones activadas!');
+    scheduleLocalReminders();
+    Router.go('reminders');
+  } else {
+    showToast('🔕 Permiso denegado. Activálas desde la configuración del navegador');
+  }
+}
+
+function scheduleLocalReminders() {
+  if (Notification.permission !== 'granted') return;
+  const reminders = VM.state.reminders;
+  const now = new Date();
+  reminders.forEach(r => {
+    if (!r.on || !r.time || r.time.includes('/') || !r.time.includes(':')) return;
+    const [h, m] = r.time.split(':').map(Number);
+    const target = new Date(now);
+    target.setHours(h, m, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 1);
+    const delay = target - now;
+    setTimeout(() => {
+      try {
+        new Notification(`⏰ ${r.name}`, {
+          body: `Es hora de registrar: ${r.name}`,
+          icon: '/vivir-mejor/assets/icon-192.png',
+        });
+      } catch(e) {
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      }
+    }, delay);
+  });
+}
+
+async function testNotification() {
+  if (!('Notification' in window)) {
+    showToast('⚠️ Tu navegador no soporta notificaciones');
+    return;
+  }
+
   if (Notification.permission !== 'granted') {
     showToast('⚠️ Primero activá las notificaciones');
     return;
   }
 
   try {
-    // En Chrome móvil las notificaciones requieren Service Worker
+    // Método 1: Service Worker (Chrome móvil)
     if ('serviceWorker' in navigator) {
-      const reg = await navigator.serviceWorker.ready;
-      await reg.showNotification('🌿 Vivir Mejor', {
-        body:    '¡Las notificaciones funcionan correctamente! 🎉',
-        icon:    '/assets/icon-192.png',
-        badge:   '/assets/icon-72.png',
-        vibrate: [200, 100, 200],
-        tag:     'test-notification',
-        data:    { url: '/' },
-      });
-      showToast('✅ ¡Notificación enviada! Revisá tu pantalla');
-    } else {
-      // Fallback para navegadores de escritorio
-      new Notification('🌿 Vivir Mejor', {
-        body: '¡Las notificaciones funcionan correctamente!',
-        icon: '/assets/icon-192.png',
-      });
-      showToast('✅ Notificación de prueba enviada');
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg) {
+        await reg.showNotification('🌿 Vivir Mejor', {
+          body:    '¡Las notificaciones funcionan correctamente! 🎉',
+          icon:    '/vivir-mejor/assets/icon-192.png',
+          badge:   '/vivir-mejor/assets/icon-72.png',
+          vibrate: [200, 100, 200],
+          tag:     'test-notification',
+        });
+        showToast('✅ ¡Notificación enviada!');
+        return;
+      }
     }
+    // Método 2: Notificación directa (fallback)
+    const n = new Notification('🌿 Vivir Mejor', {
+      body: '¡Las notificaciones funcionan correctamente! 🎉',
+      icon: '/vivir-mejor/assets/icon-192.png',
+    });
+    n.onclick = () => window.focus();
+    showToast('✅ Notificación enviada');
   } catch(err) {
-    console.error('Error al enviar notificación:', err);
-    showToast('❌ Error: ' + err.message);
+    // Método 3: Toast visual como último recurso
+    showToast('🔔 Recordatorio: ¡Es hora de registrar tus hábitos!');
+    // Vibración si disponible
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
   }
 }
 
