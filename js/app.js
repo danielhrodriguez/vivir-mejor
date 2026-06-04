@@ -42,13 +42,13 @@
 
     // ── Registrar Service Worker (PWA) ───────────────────────────────
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
+    navigator.serviceWorker.register('/vivir-mejor/service-worker.js')
       .then(() => console.log('✅ Service Worker registrado'))
       .catch(err => console.warn('SW error:', err));
   }
 
-  // ── Cargar estado local ────────────────────────────────────────
-    VM.load();
+  // ── Cargar estado local (sin uid por ahora; se recarga en onLoginSuccess) ────
+    VM.state = VM.defaultState();
 
     // ── Inicializar Firebase Auth (escucha cambios de sesión) ──────
     // Esperamos que FB esté disponible (lo inyecta firebase-config.js)
