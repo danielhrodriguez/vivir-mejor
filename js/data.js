@@ -4,74 +4,61 @@
 
 const VM = {
 
-  // ---------- Estado de la app ----------
-  state: {
-    userName: 'Ana Martínez',
-    userInitials: 'AM',
-    streak: 7,
-    plan: 'basic', // 'basic' | 'premium'
+  // ---------- Estado por defecto (usuario nuevo) ----------
+  defaultState() {
+    return {
+      userName: '',
+      userInitials: '',
+      streak: 0,
+      plan: 'basic',
 
-    sleep: {
-      bedtime: '23:00',
-      wakeup: '06:30',
-      hoursToday: 7.5,
-      weekData: [6.5, 7.0, 8.0, 7.5, 6.0, 7.5, 7.2],
-    },
+      sleep: {
+        bedtime: '23:00',
+        wakeup: '07:00',
+        hoursToday: 0,
+        weekData: [0, 0, 0, 0, 0, 0, 0],
+      },
 
-    water: {
-      glasses: 5,
-      goal: 8,
-      weekData: [5, 7, 6, 8, 4, 6, 5],
-    },
+      water: {
+        glasses: 0,
+        goal: 8,
+        weekData: [0, 0, 0, 0, 0, 0, 0],
+      },
 
-    exercise: {
-      weekDone: [true, false, true, true, false, true, false],
-      selectedActivity: 'Caminata',
-      activities: ['Caminata', 'Yoga', 'Gym', 'Bici', 'Natación', 'Correr'],
-      history: [
-        { day: 'Ayer',   activity: 'Gym',    duration: '45 min' },
-        { day: 'Lunes',  activity: 'Correr', duration: '30 min' },
-        { day: 'Domingo', activity: 'Yoga',  duration: '60 min' },
+      exercise: {
+        weekDone: [false, false, false, false, false, false, false],
+        selectedActivity: 'Caminata',
+        activities: ['Caminata', 'Yoga', 'Gym', 'Bici', 'Natación', 'Correr'],
+        history: [],
+      },
+
+      mood: {
+        selected: null,
+        options:  ['😔','😐','🙂','😊','😄'],
+        labels:   ['Mal','Regular','Bien','Genial','Excelente'],
+        weekData: [null, null, null, null, null, null, null],
+        note: '',
+      },
+
+      reminders: [
+        { icon: '😴', color: '#F0EDF8', name: 'Hora de dormir',      time: '22:30',        on: false },
+        { icon: '💧', color: '#E8F3F8', name: 'Recordatorio de agua', time: 'Cada 2 horas', on: false },
+        { icon: '🏃', color: '#EAF4EF', name: 'Ejercicio',            time: '07:00',        on: false },
+        { icon: '💊', color: '#FBF3E3', name: 'Medicamentos',         time: '08:00',        on: false },
+        { icon: '😊', color: '#FDF0E8', name: 'Check-in emocional',   time: '19:00',        on: false },
       ],
-    },
 
-    mood: {
-      selected: 3,
-      options:  ['😔','😐','🙂','😊','😄'],
-      labels:   ['Mal','Regular','Bien','Genial','Excelente'],
-      weekData: ['😊','😔','😄','🙂','😊','😄','😊'],
-      note: '',
-    },
+      meds: {
+        taken: false,
+        time: '08:00',
+      },
 
-    reminders: [
-      { icon: '😴', color: '#F0EDF8', name: 'Hora de dormir',      time: '22:30',        on: true  },
-      { icon: '💧', color: '#E8F3F8', name: 'Recordatorio de agua', time: 'Cada 2 horas', on: true  },
-      { icon: '🏃', color: '#EAF4EF', name: 'Ejercicio',            time: '07:00',        on: false },
-      { icon: '💊', color: '#FBF3E3', name: 'Medicamentos',         time: '08:00 / 20:00',on: true  },
-      { icon: '😊', color: '#FDF0E8', name: 'Check-in emocional',   time: '19:00',        on: true  },
-    ],
-
-    meds: {
-      taken: true,
-      time: '08:00',
-    },
-
-    medications: [
-      {
-        name: 'Ejemplo: Losartán',
-        dose: '50mg',
-        frequency: '1 vez por día',
-        times: ['08:00'],
-        icon: '💊',
-        color: '#F0EDF8',
-        notes: 'Tomar con el desayuno',
-        reminder: true,
-        takenCount: 0,
-        takenTimes: [],
-        createdAt: new Date().toISOString(),
-      }
-    ],
+      medications: [],
+    };
   },
+
+  // ---------- Estado de la app ----------
+  state: null,
 
   // ---------- Persistencia ----------
   save() {
@@ -79,12 +66,20 @@ const VM = {
   },
 
   load() {
+    // Siempre inicializar con estado limpio por defecto
+    this.state = this.defaultState();
     try {
       const saved = localStorage.getItem('vm_state');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Merge profundo para no perder keys nuevas
+        // Merge para no perder keys nuevas pero respetando datos guardados
         this.state = Object.assign({}, this.state, parsed);
+        // Merge de objetos anidados
+        ['sleep','water','exercise','mood','meds'].forEach(key => {
+          if (parsed[key]) this.state[key] = Object.assign({}, this.defaultState()[key], parsed[key]);
+        });
+        if (parsed.medications) this.state.medications = parsed.medications;
+        if (parsed.reminders)   this.state.reminders   = parsed.reminders;
       }
     } catch(e) {}
   },
