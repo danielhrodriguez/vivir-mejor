@@ -61,26 +61,40 @@ const VM = {
   state: null,
 
   // ---------- Persistencia ----------
-  save() {
-    try { localStorage.setItem('vm_state', JSON.stringify(this.state)); } catch(e) {}
+  _storageKey(uid) {
+    return uid ? 'vm_state_' + uid : null;
   },
 
-  load() {
+  save(uid) {
+    try {
+      const key = this._storageKey(uid || this._currentUid);
+      if (key) localStorage.setItem(key, JSON.stringify(this.state));
+    } catch(e) {}
+  },
+
+  load(uid) {
     // Siempre inicializar con estado limpio por defecto
     this.state = this.defaultState();
+    this._currentUid = uid || null;
     try {
-      const saved = localStorage.getItem('vm_state');
+      const key = this._storageKey(uid);
+      const saved = key ? localStorage.getItem(key) : null;
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Merge para no perder keys nuevas pero respetando datos guardados
         this.state = Object.assign({}, this.state, parsed);
-        // Merge de objetos anidados
-        ['sleep','water','exercise','mood','meds'].forEach(key => {
-          if (parsed[key]) this.state[key] = Object.assign({}, this.defaultState()[key], parsed[key]);
+        ['sleep','water','exercise','mood','meds'].forEach(k => {
+          if (parsed[k]) this.state[k] = Object.assign({}, this.defaultState()[k], parsed[k]);
         });
         if (parsed.medications) this.state.medications = parsed.medications;
         if (parsed.reminders)   this.state.reminders   = parsed.reminders;
       }
+    } catch(e) {}
+  },
+
+  clearUserData(uid) {
+    try {
+      const key = this._storageKey(uid);
+      if (key) localStorage.removeItem(key);
     } catch(e) {}
   },
 

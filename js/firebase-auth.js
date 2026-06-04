@@ -82,7 +82,9 @@ const AuthService = {
   async logout() {
     try {
       await FB.signOut(FB.auth);
-      VM.state.plan = 'basic';
+      // Resetear estado en memoria (no borrar localStorage, para recordar datos al volver a entrar)
+      VM.state = VM.defaultState();
+      VM._currentUid = null;
       showToast('👋 Sesión cerrada');
       Router.go('login');
     } catch (err) {
@@ -92,14 +94,15 @@ const AuthService = {
 
   // ── Callbacks de estado (los llama onAuthStateChanged) ───────────
   async onLoginSuccess(user) {
-    // Cargar datos del usuario desde Firestore
+    // Cargar datos del usuario (por uid para aislar entre usuarios)
+    VM.load(user.uid);
     const profile = await UserService.getProfile(user.uid);
     if (profile) {
-      VM.state.userName    = profile.displayName || user.displayName || 'Usuario';
+      VM.state.userName     = profile.displayName || user.displayName || 'Usuario';
       VM.state.userInitials = this._initials(VM.state.userName);
-      VM.state.plan        = profile.plan || 'basic';
-      VM.state.premiumEnds = profile.premiumEnds || null;
-      VM.save();
+      VM.state.plan         = profile.plan || 'basic';
+      VM.state.premiumEnds  = profile.premiumEnds || null;
+      VM.save(user.uid);
     }
     // Si estaba en login/welcome, ir al home
     const cur = Router.current;
