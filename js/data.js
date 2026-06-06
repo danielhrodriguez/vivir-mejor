@@ -98,6 +98,66 @@ const VM = {
     } catch(e) {}
   },
 
+  // ---------- Reseteo semanal automático ----------
+  // Guarda la semana anterior en el historial y resetea los datos semanales
+  checkWeeklyReset(uid) {
+    try {
+      const today      = new Date();
+      const dayOfWeek  = today.getDay(); // 0=Dom … 6=Sab
+      const isMonday   = dayOfWeek === 1;
+
+      // Clave para recordar el último lunes procesado
+      const resetKey = 'vm_last_reset_' + (uid || 'anon');
+      const lastReset = localStorage.getItem(resetKey);
+
+      // Obtener el lunes de esta semana (YYYY-MM-DD)
+      const monday = new Date(today);
+      monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+      const mondayStr = monday.toISOString().split('T')[0];
+
+      // Si ya se reseteó esta semana, no hacer nada
+      if (lastReset === mondayStr) return;
+
+      // Guardar semana anterior en el historial antes de resetear
+      const weekLabel = mondayStr;
+      if (!this.state.history) this.state.history = [];
+
+      const avgSleep = this.state.sleep.weekData.filter(v => v > 0);
+      const avgSleepVal = avgSleep.length
+        ? parseFloat((avgSleep.reduce((a,b) => a+b, 0) / avgSleep.length).toFixed(1))
+        : 0;
+
+      this.state.history.unshift({
+        week:        weekLabel,
+        sleep:       avgSleepVal,
+        water:       [...this.state.water.weekData],
+        exercise:    [...this.state.exercise.weekDone],
+        mood:        [...this.state.mood.weekData],
+      });
+
+      // Mantener máximo 12 semanas de historial
+      if (this.state.history.length > 12) this.state.history = this.state.history.slice(0, 12);
+
+      // Resetear datos semanales a cero
+      this.state.sleep.weekData      = [0, 0, 0, 0, 0, 0, 0];
+      this.state.sleep.hoursToday    = 0;
+      this.state.water.weekData      = [0, 0, 0, 0, 0, 0, 0];
+      this.state.water.glasses       = 0;
+      this.state.exercise.weekDone   = [false, false, false, false, false, false, false];
+      this.state.mood.weekData       = [null, null, null, null, null, null, null];
+      this.state.mood.selected       = null;
+      this.state.mood.note           = '';
+
+      // Guardar estado reseteado y marcar el lunes procesado
+      this.save(uid);
+      localStorage.setItem(resetKey, mondayStr);
+
+      console.log('✅ Reseteo semanal realizado para la semana:', mondayStr);
+    } catch(e) {
+      console.error('Error en checkWeeklyReset:', e);
+    }
+  },
+
   // ---------- Helpers ----------
   calcSleepHours(bedtime, wakeup) {
     const [bh, bm] = bedtime.split(':').map(Number);

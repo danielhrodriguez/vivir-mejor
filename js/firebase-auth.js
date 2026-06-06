@@ -96,6 +96,8 @@ const AuthService = {
   async onLoginSuccess(user) {
     // Cargar datos del usuario (por uid para aislar entre usuarios)
     VM.load(user.uid);
+    // Verificar si corresponde hacer el reseteo semanal (cada lunes)
+    VM.checkWeeklyReset(user.uid);
     const profile = await UserService.getProfile(user.uid);
     if (profile) {
       VM.state.userName     = profile.displayName || user.displayName || 'Usuario';
