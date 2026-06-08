@@ -65,6 +65,15 @@ Router.register('home', () => {
               onmouseout="this.style.background='none'">
         🔔 Recordatorios
       </button>
+      <button onclick="Activation.openAdminPanel()"
+              style="width:100%;padding:12px 16px;border:none;background:none;
+                     text-align:left;cursor:pointer;font-family:'Nunito',sans-serif;
+                     font-size:13px;color:var(--text-dark);display:flex;align-items:center;gap:8px;
+                     border-bottom:1px solid var(--border)"
+              onmouseover="this.style.background='var(--bg)'"
+              onmouseout="this.style.background='none'">
+        🔐 Panel admin
+      </button>
       <button onclick="confirmLogout()"
               style="width:100%;padding:12px 16px;border:none;background:none;
                      text-align:left;cursor:pointer;font-family:'Nunito',sans-serif;
