@@ -22,8 +22,8 @@ function getMedStatusColor(s) {
 Router.register('home', () => {
   const s  = VM.state;
   const wd = s.water.goal > 0 ? Math.round((s.water.glasses / s.water.goal) * 100) : 0;
-  const moodEmoji = s.mood.options[s.mood.selected];
-  const moodLabel = s.mood.labels[s.mood.selected];
+  const moodEmoji = s.mood.selected !== null ? s.mood.options[s.mood.selected] : '😊';
+  const moodLabel = s.mood.selected !== null ? s.mood.labels[s.mood.selected] : 'Sin registrar';
   const exDays    = VM.exerciseDaysCount();
 
   return `
@@ -131,7 +131,7 @@ Router.register('home', () => {
         <div class="habit-value" style="font-size:16px">${moodLabel}</div>
         <div class="habit-unit">check-in de hoy</div>
         <div class="habit-progress">
-          <div class="habit-progress-fill" style="width:${Math.round(((s.mood.selected+1)/5)*100)}%"></div>
+          <div class="habit-progress-fill" style="width:${s.mood.selected !== null ? Math.round(((s.mood.selected+1)/5)*100) : 0}%"></div>
         </div>
       </button>
     </div>
