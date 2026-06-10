@@ -49,8 +49,16 @@ Router.register('premium', () => {
         <div class="plan-feature has"><i class="ti ti-check"></i> Seguimiento de medicamentos</div>
       </div>
 
-      <div style="padding:0 16px 24px;text-align:center;font-size:11px;color:var(--text-light)">
-        Para renovar o cancelar, gestionalo desde tu cuenta de Mercado Pago.
+      <div style="padding:0 16px 24px;text-align:center">
+        <button onclick="cancelPremium()"
+          style="width:100%;padding:14px;border:2px solid var(--peach);background:none;
+                 border-radius:12px;color:var(--peach);font-size:14px;font-weight:700;
+                 font-family:'Nunito',sans-serif;cursor:pointer;margin-bottom:12px">
+          🚫 Cancelar suscripción
+        </button>
+        <div style="font-size:11px;color:var(--text-light)">
+          Al cancelar, tu plan Premium seguirá activo hasta el final del período pagado.
+        </div>
       </div>
     `;
   }
@@ -248,4 +256,43 @@ function showSuccessScreen(endsDate) {
       }
     </style>
   `;
+}
+
+// ── Cancelar suscripción Premium ────────────────────────────────
+async function cancelPremium() {
+  const confirmed = confirm('¿Estás seguro que querés cancelar tu suscripción Premium?\n\nTu plan seguirá activo hasta el final del período pagado.');
+  if (!confirmed) return;
+
+  try {
+    const user = FB.auth.currentUser;
+    if (!user) return;
+
+    // Registrar solicitud de cancelación en Firestore
+    await FB.addDoc(FB.collection(FB.db, 'cancellations'), {
+      uid:       user.uid,
+      email:     user.email,
+      name:      VM.state.userName,
+      plan:      VM.state.plan,
+      requestedAt: new Date().toISOString(),
+      status:    'pending'
+    });
+
+    // Actualizar plan a básico en Firestore
+    const userRef = FB.doc(FB.db, 'users', user.uid);
+    await FB.updateDoc(userRef, {
+      plan:          'basic',
+      premiumEnds:   null,
+      cancelledAt:   new Date().toISOString()
+    });
+
+    // Actualizar estado local
+    VM.state.plan = 'basic';
+    VM.save(user.uid);
+
+    showToast('✅ Suscripción cancelada. Gracias por usar Vivir Mejor.');
+    Router.go('home');
+  } catch (err) {
+    console.error('Error al cancelar:', err);
+    showToast('❌ Error al cancelar. Intentá de nuevo.');
+  }
 }
