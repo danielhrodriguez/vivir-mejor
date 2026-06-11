@@ -313,13 +313,26 @@ function getMedSummary(meds) {
 
 function buildMedHistory(meds) {
   const days = ['L','M','X','J','V','S','D'];
+  const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lunes ... 6=Domingo
+
   return days.map((d, i) => {
-    const done = Math.random() > 0.3; // Simulado — en prod viene de Firestore
+    // Solo marcar como tomado el día actual si hay tomas registradas hoy
+    const isFuture = i > todayIdx;
+    let done = false;
+    if (i === todayIdx) {
+      // Día de hoy: verificar si se tomó al menos una dosis
+      done = meds.some(m => (m.takenCount || 0) > 0);
+    } else if (i < todayIdx) {
+      // Días anteriores: usar historial guardado si existe
+      done = meds.some(m => m.weekHistory && m.weekHistory[i]);
+    }
     return `
       <div style="text-align:center;min-width:36px">
-        <div style="font-size:10px;color:var(--text-light);margin-bottom:4px">${d}</div>
+        <div style="font-size:10px;color:${i === todayIdx ? 'var(--text-dark)' : 'var(--text-light)'};
+                    font-weight:${i === todayIdx ? '800' : 'normal'};margin-bottom:4px">${d}</div>
         <div style="width:32px;height:32px;border-radius:50%;margin:0 auto;
-                    background:${done ? 'var(--sage)' : '#E4EDE8'};
+                    background:${done ? 'var(--sage)' : isFuture ? 'transparent' : '#E4EDE8'};
+                    border:${isFuture ? '1.5px dashed #E4EDE8' : 'none'};
                     display:flex;align-items:center;justify-content:center;font-size:14px">
           ${done ? '✓' : ''}
         </div>
@@ -348,6 +361,11 @@ function toggleDose(medIdx, timeIdx, time) {
     // Vibrar si está disponible
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
   }
+
+  // Guardar en historial semanal del día actual
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  if (!med.weekHistory) med.weekHistory = [false,false,false,false,false,false,false];
+  med.weekHistory[todayIdx] = (med.takenCount || 0) > 0;
 
   VM.save();
   syncMedsToCloud();
