@@ -313,18 +313,42 @@ function getMedSummary(meds) {
 
 function buildMedHistory(meds) {
   const days = ['L','M','X','J','V','S','D'];
-  return days.map((d, i) => {
-    const done = Math.random() > 0.3; // Simulado — en prod viene de Firestore
-    return `
-      <div style="text-align:center;min-width:36px">
-        <div style="font-size:10px;color:var(--text-light);margin-bottom:4px">${d}</div>
-        <div style="width:32px;height:32px;border-radius:50%;margin:0 auto;
-                    background:${done ? 'var(--sage)' : '#E4EDE8'};
-                    display:flex;align-items:center;justify-content:center;font-size:14px">
-          ${done ? '✓' : ''}
-        </div>
-      </div>`;
-  }).join('');
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  let html = '';
+
+  for (let i = 0; i < 7; i++) {
+    const d        = days[i];
+    const isFuture = i > todayIdx;
+    const isToday  = i === todayIdx;
+    const isPast   = i < todayIdx;
+
+    let done = false;
+    if (isToday) {
+      done = meds.some(function(m) { return (m.takenCount || 0) > 0; });
+    } else if (isPast) {
+      done = meds.some(function(m) { return m.weekHistory && m.weekHistory[i]; });
+    }
+
+    var bgColor, borderStyle, checkColor, dayColor, dayWeight;
+    if (done) {
+      bgColor = 'var(--sage)'; borderStyle = 'none'; checkColor = 'white';
+    } else if (isToday) {
+      bgColor = 'transparent'; borderStyle = '2.5px solid var(--sage)'; checkColor = 'transparent';
+    } else if (isFuture) {
+      bgColor = 'transparent'; borderStyle = '1.5px dashed #E4EDE8'; checkColor = 'transparent';
+    } else {
+      bgColor = '#E4EDE8'; borderStyle = 'none'; checkColor = 'transparent';
+    }
+    dayColor  = isToday ? 'var(--sage)' : 'var(--text-light)';
+    dayWeight = isToday ? '800' : 'normal';
+
+    html += '<div style="text-align:center;min-width:36px">'
+          + '<div style="font-size:10px;color:' + dayColor + ';font-weight:' + dayWeight + ';margin-bottom:4px">' + d + '</div>'
+          + '<div style="width:32px;height:32px;border-radius:50%;margin:0 auto;background:' + bgColor + ';border:' + borderStyle + ';display:flex;align-items:center;justify-content:center;font-size:16px;color:' + checkColor + ';font-weight:700">'
+          + (done ? '✓' : '')
+          + '</div></div>';
+  }
+  return html;
 }
 
 // ── Registro de toma ──────────────────────────────────────────────
@@ -348,6 +372,11 @@ function toggleDose(medIdx, timeIdx, time) {
     // Vibrar si está disponible
     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
   }
+
+  // Guardar en historial semanal del día actual
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  if (!med.weekHistory) med.weekHistory = [false,false,false,false,false,false,false];
+  med.weekHistory[todayIdx] = (med.takenCount || 0) > 0;
 
   VM.save();
   syncMedsToCloud();
