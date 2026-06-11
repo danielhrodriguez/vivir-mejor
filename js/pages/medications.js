@@ -313,30 +313,54 @@ function getMedSummary(meds) {
 
 function buildMedHistory(meds) {
   const days = ['L','M','X','J','V','S','D'];
-  const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lunes ... 6=Domingo
+  const todayIdx = (new Date().getDay() + 6) % 7;
 
   return days.map((d, i) => {
-    // Solo marcar como tomado el día actual si hay tomas registradas hoy
-    const isFuture = i > todayIdx;
+    const isFuture  = i > todayIdx;
+    const isToday   = i === todayIdx;
+    const isPast    = i < todayIdx;
+
     let done = false;
-    if (i === todayIdx) {
-      // Día de hoy: verificar si se tomó al menos una dosis
+    if (isToday) {
       done = meds.some(m => (m.takenCount || 0) > 0);
-    } else if (i < todayIdx) {
-      // Días anteriores: usar historial guardado si existe
+    } else if (isPast) {
       done = meds.some(m => m.weekHistory && m.weekHistory[i]);
     }
-    return `
+
+    // Estilos según estado
+    let bgColor, borderStyle, textColor, checkColor;
+    if (done) {
+      bgColor     = 'var(--sage)';
+      borderStyle = 'none';
+      checkColor  = 'white';
+    } else if (isToday) {
+      bgColor     = 'transparent';
+      borderStyle = '2.5px solid var(--sage)';
+      checkColor  = 'transparent';
+    } else if (isFuture) {
+      bgColor     = 'transparent';
+      borderStyle = '1.5px dashed #E4EDE8';
+      checkColor  = 'transparent';
+    } else {
+      // Día pasado sin toma
+      bgColor     = '#E4EDE8';
+      borderStyle = 'none';
+      checkColor  = 'transparent';
+    }
+
+    return \`
       <div style="text-align:center;min-width:36px">
-        <div style="font-size:10px;color:${i === todayIdx ? 'var(--text-dark)' : 'var(--text-light)'};
-                    font-weight:${i === todayIdx ? '800' : 'normal'};margin-bottom:4px">${d}</div>
+        <div style="font-size:10px;
+                    color:\${isToday ? 'var(--sage)' : 'var(--text-light)'};
+                    font-weight:\${isToday ? '800' : 'normal'};
+                    margin-bottom:4px">\${d}</div>
         <div style="width:32px;height:32px;border-radius:50%;margin:0 auto;
-                    background:${done ? 'var(--sage)' : isFuture ? 'transparent' : '#E4EDE8'};
-                    border:${isFuture ? '1.5px dashed #E4EDE8' : 'none'};
-                    display:flex;align-items:center;justify-content:center;font-size:14px">
-          ${done ? '✓' : ''}
+                    background:\${bgColor};border:\${borderStyle};
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:16px;color:\${checkColor};font-weight:700">
+          \${done ? '✓' : ''}
         </div>
-      </div>`;
+      </div>\`;
   }).join('');
 }
 
