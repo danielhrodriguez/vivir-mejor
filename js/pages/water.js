@@ -67,6 +67,8 @@ function renderGlasses() {
     if (i < w.glasses) g.innerHTML = '<i class="ti ti-droplet" style="font-size:15px;pointer-events:none"></i>';
     g.onclick = () => {
       VM.state.water.glasses = i + 1;
+      const todayIdx = (new Date().getDay() + 6) % 7;
+      VM.state.water.weekData[todayIdx] = VM.state.water.glasses;
       VM.save();
       updateWaterUI();
     };
@@ -99,4 +101,7 @@ function updateWaterUI() {
     : '¡Vas bien! Faltan ' + (w.goal - w.glasses) + ' vasos';
   if (mlEl) mlEl.textContent = (w.glasses * 200) + ' ml';
   renderGlasses();
+  // Actualizar gráfico de barras también
+  const chart = document.getElementById('water-chart');
+  if (chart) buildBarChart(chart, VM.state.water.weekData, 8, '#B5D9EA', 'var(--sky)');
 }
