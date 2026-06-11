@@ -51,6 +51,9 @@ Router.register('mood_after', () => {
 
 function selectMood(i) {
   VM.state.mood.selected = i;
+  // Guardar en weekData en el índice del día actual
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  VM.state.mood.weekData[todayIdx] = i;
   VM.save();
   document.querySelectorAll('.mood-btn').forEach((b, j) => {
     b.classList.toggle('selected', j === i);

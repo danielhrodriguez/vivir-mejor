@@ -65,6 +65,7 @@ Router.register('home', () => {
               onmouseout="this.style.background='none'">
         🔔 Recordatorios
       </button>
+      ${FB.auth.currentUser && FB.auth.currentUser.uid === 'j2H13GvaCNUuIHCpFesET8W7q0y1' ? `
       <button onclick="Activation.openAdminPanel()"
               style="width:100%;padding:12px 16px;border:none;background:none;
                      text-align:left;cursor:pointer;font-family:'Nunito',sans-serif;
@@ -73,7 +74,7 @@ Router.register('home', () => {
               onmouseover="this.style.background='var(--bg)'"
               onmouseout="this.style.background='none'">
         🔐 Panel admin
-      </button>
+      </button>` : ''}
       <button onclick="confirmLogout()"
               style="width:100%;padding:12px 16px;border:none;background:none;
                      text-align:left;cursor:pointer;font-family:'Nunito',sans-serif;

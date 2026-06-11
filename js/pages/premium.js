@@ -168,7 +168,7 @@ Router.register('premium', () => {
     </div>
 
     <div style="padding:0 16px 24px;text-align:center;font-size:11px;color:var(--text-light)">
-      Al suscribirte aceptás los términos del servicio.<br>Sin permanencia. Sin compromisos.
+      Al suscribirte aceptás los <a href="#" onclick="Router.go('terms');return false;" style="color:var(--sage);font-weight:700;text-decoration:underline">términos del servicio</a>.<br>Sin permanencia. Sin compromisos.
     </div>
     <div style="height:20px"></div>
   `;
@@ -296,3 +296,67 @@ async function cancelPremium() {
     showToast('❌ Error al cancelar. Intentá de nuevo.');
   }
 }
+
+// ── Pantalla Términos del Servicio ──────────────────────────────
+Router.register('terms', () => {
+  return `
+    <div class="header">
+      <div style="display:flex;align-items:center">
+        <button class="header-back" onclick="Router.back()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+        <div class="header-title">Términos del Servicio</div>
+      </div>
+    </div>
+
+    <div style="padding:16px;font-family:'Nunito',sans-serif;color:var(--text-dark)">
+
+      <p style="font-size:12px;color:var(--text-light);margin-bottom:20px">Última actualización: junio de 2025</p>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">1. Aceptación de los términos</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">Al registrarte y utilizar la aplicación Vivir Mejor, aceptás estos Términos del Servicio en su totalidad. Si no estás de acuerdo con alguna de las condiciones, te pedimos que no utilices la aplicación.</p>
+      </div>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">2. Descripción del servicio</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">Vivir Mejor es una aplicación de seguimiento de hábitos saludables que permite registrar sueño, hidratación, ejercicio, estado de ánimo y medicamentos. La app ofrece un Plan Básico gratuito y un Plan Premium con funciones adicionales.</p>
+      </div>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">3. Cuenta de usuario</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">Para usar la app debés crear una cuenta con un correo electrónico válido y una contraseña. Sos responsable de mantener la confidencialidad de tus credenciales y de todas las actividades realizadas desde tu cuenta.</p>
+      </div>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">4. Plan Premium y pagos</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">El Plan Premium tiene un costo mensual de USD 5. El pago se procesa a través de Mercado Pago. Podés cancelar tu suscripción en cualquier momento desde la sección Premium de la app. Al cancelar, el plan seguirá activo hasta el fin del período ya abonado, sin reembolsos parciales.</p>
+      </div>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">5. Privacidad y datos personales</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">Tus datos de salud son privados y solo vos podés acceder a ellos. No compartimos, vendemos ni cedemos tu información personal a terceros. Los datos se almacenan de forma segura mediante Firebase (Google). Podés solicitar la eliminación de tu cuenta y datos en cualquier momento.</p>
+      </div>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">6. Limitación de responsabilidad</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">Vivir Mejor es una herramienta de seguimiento personal y no reemplaza el consejo médico profesional. La información registrada en la app tiene fines informativos únicamente. Ante cualquier duda sobre tu salud, consultá a un profesional médico habilitado.</p>
+      </div>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">7. Uso aceptable</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">Te comprometés a utilizar la aplicación de forma personal y no comercial, a no intentar acceder a cuentas ajenas, y a no hacer un uso fraudulento del sistema de activación de códigos Premium.</p>
+      </div>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">8. Modificaciones</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">Nos reservamos el derecho de actualizar estos términos en cualquier momento. Te notificaremos sobre cambios importantes a través de la app. El uso continuado de la aplicación tras la actualización implica la aceptación de los nuevos términos.</p>
+      </div>
+
+      <div style="background:var(--white);border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+        <h3 style="font-size:15px;font-weight:800;color:var(--sage);margin-bottom:10px">9. Contacto</h3>
+        <p style="font-size:13px;color:var(--text-mid);line-height:1.6">Si tenés preguntas o consultas sobre estos términos, podés contactarnos a través de la sección de soporte dentro de la app o escribirnos directamente por WhatsApp.</p>
+      </div>
+
+      <div style="height:16px"></div>
+    </div>
+  `;
+});

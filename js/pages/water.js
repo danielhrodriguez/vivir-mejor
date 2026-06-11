@@ -78,6 +78,8 @@ function addWater() {
   const w = VM.state.water;
   if (w.glasses < w.goal) {
     w.glasses++;
+    const todayIdx = (new Date().getDay() + 6) % 7;
+    w.weekData[todayIdx] = w.glasses;
     VM.save();
     updateWaterUI();
     showToast('💧 ¡Vaso registrado!');

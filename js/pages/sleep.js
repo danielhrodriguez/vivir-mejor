@@ -20,15 +20,48 @@ Router.register('sleep', () => {
       </div>
     </div>
 
-    <div class="time-pickers">
-      <div class="time-field">
-        <label>Me dormí</label>
-        <input type="time" id="sleep-start" value="${sl.bedtime}" onchange="onSleepChange()">
+    <div style="padding:0 16px 8px">
+
+      <!-- Selector Me dormí -->
+      <div style="background:var(--white);border-radius:16px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+        <div style="font-size:13px;color:var(--text-mid);font-weight:600;margin-bottom:12px">😴 Me dormí</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px">
+          <button onclick="adjustTime('sleep-h',  -1, 'start')" style="width:48px;height:48px;border-radius:50%;border:none;background:var(--sage-light);color:var(--sage);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">−</button>
+          <div style="text-align:center;min-width:80px">
+            <div id="sleep-start-display" style="font-size:36px;font-weight:800;color:var(--text-dark);font-family:'Nunito',sans-serif;line-height:1">${sl.bedtime}</div>
+            <div style="font-size:11px;color:var(--text-light);margin-top:2px">horas</div>
+          </div>
+          <button onclick="adjustTime('sleep-h',  +1, 'start')" style="width:48px;height:48px;border-radius:50%;border:none;background:var(--sage-light);color:var(--sage);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>
+          <div style="font-size:28px;color:var(--text-light);font-weight:300">:</div>
+          <button onclick="adjustTime('sleep-m', -15, 'start')" style="width:48px;height:48px;border-radius:50%;border:none;background:var(--sage-light);color:var(--sage);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">−</button>
+          <div style="text-align:center;min-width:80px">
+            <div id="sleep-start-min-display" style="font-size:36px;font-weight:800;color:var(--text-dark);font-family:'Nunito',sans-serif;line-height:1">${sl.bedtime.split(':')[1]}</div>
+            <div style="font-size:11px;color:var(--text-light);margin-top:2px">minutos</div>
+          </div>
+          <button onclick="adjustTime('sleep-m', +15, 'start')" style="width:48px;height:48px;border-radius:50%;border:none;background:var(--sage-light);color:var(--sage);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>
+        </div>
       </div>
-      <div class="time-field">
-        <label>Me desperté</label>
-        <input type="time" id="sleep-end" value="${sl.wakeup}" onchange="onSleepChange()">
+
+      <!-- Selector Me desperté -->
+      <div style="background:var(--white);border-radius:16px;padding:16px 20px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+        <div style="font-size:13px;color:var(--text-mid);font-weight:600;margin-bottom:12px">☀️ Me desperté</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px">
+          <button onclick="adjustTime('wake-h',  -1, 'end')" style="width:48px;height:48px;border-radius:50%;border:none;background:var(--lavender-light);color:var(--lavender);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">−</button>
+          <div style="text-align:center;min-width:80px">
+            <div id="sleep-end-display" style="font-size:36px;font-weight:800;color:var(--text-dark);font-family:'Nunito',sans-serif;line-height:1">${sl.wakeup}</div>
+            <div style="font-size:11px;color:var(--text-light);margin-top:2px">horas</div>
+          </div>
+          <button onclick="adjustTime('wake-h',  +1, 'end')" style="width:48px;height:48px;border-radius:50%;border:none;background:var(--lavender-light);color:var(--lavender);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>
+          <div style="font-size:28px;color:var(--text-light);font-weight:300">:</div>
+          <button onclick="adjustTime('wake-m', -15, 'end')" style="width:48px;height:48px;border-radius:50%;border:none;background:var(--lavender-light);color:var(--lavender);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">−</button>
+          <div style="text-align:center;min-width:80px">
+            <div id="sleep-end-min-display" style="font-size:36px;font-weight:800;color:var(--text-dark);font-family:'Nunito',sans-serif;line-height:1">${sl.wakeup.split(':')[1]}</div>
+            <div style="font-size:11px;color:var(--text-light);margin-top:2px">minutos</div>
+          </div>
+          <button onclick="adjustTime('wake-m', +15, 'end')" style="width:48px;height:48px;border-radius:50%;border:none;background:var(--lavender-light);color:var(--lavender);font-size:24px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>
+        </div>
       </div>
+
     </div>
 
     <div class="section-title">Esta semana</div>
@@ -59,6 +92,45 @@ Router.register('sleep_after', () => {
   }
 });
 
+function adjustTime(field, delta, target) {
+  const sl = VM.state.sleep;
+  let [h, m] = (target === 'start' ? sl.bedtime : sl.wakeup).split(':').map(Number);
+
+  if (field.includes('-h')) {
+    h = (h + delta + 24) % 24;
+  } else {
+    m = (m + delta + 60) % 60;
+  }
+
+  const hh = String(h).padStart(2, '0');
+  const mm = String(m).padStart(2, '0');
+  const newTime = `${hh}:${mm}`;
+
+  if (target === 'start') {
+    sl.bedtime = newTime;
+    const d = document.getElementById('sleep-start-display');
+    const dm = document.getElementById('sleep-start-min-display');
+    if (d) d.textContent = newTime;
+    if (dm) dm.textContent = mm;
+  } else {
+    sl.wakeup = newTime;
+    const d = document.getElementById('sleep-end-display');
+    const dm = document.getElementById('sleep-end-min-display');
+    if (d) d.textContent = newTime;
+    if (dm) dm.textContent = mm;
+  }
+
+  const hours = VM.calcSleepHours(sl.bedtime, sl.wakeup);
+  sl.hoursToday = hours;
+  // Guardar en weekData en el índice del día actual
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  sl.weekData[todayIdx] = hours;
+  VM.save();
+  const disp = document.getElementById('sleep-display');
+  if (disp) disp.textContent = hours;
+  showToast('😴 Sueño actualizado: ' + hours + ' h');
+}
+
 function onSleepChange() {
   const start = document.getElementById('sleep-start').value;
   const end   = document.getElementById('sleep-end').value;
@@ -66,6 +138,8 @@ function onSleepChange() {
   VM.state.sleep.bedtime    = start;
   VM.state.sleep.wakeup     = end;
   VM.state.sleep.hoursToday = hours;
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  VM.state.sleep.weekData[todayIdx] = hours;
   VM.save();
   const disp = document.getElementById('sleep-display');
   if (disp) disp.textContent = hours;
