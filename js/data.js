@@ -85,7 +85,15 @@ const VM = {
         ['sleep','water','exercise','mood','meds'].forEach(k => {
           if (parsed[k]) this.state[k] = Object.assign({}, this.defaultState()[k], parsed[k]);
         });
-        if (parsed.medications) this.state.medications = parsed.medications;
+        if (parsed.medications) {
+          // Asegurar que cada medicamento tenga weekHistory limpio si no existe
+          this.state.medications = parsed.medications.map(m => ({
+            ...m,
+            weekHistory: m.weekHistory || [false,false,false,false,false,false,false],
+            takenCount:  m.takenCount  || 0,
+            takenTimes:  m.takenTimes  || [],
+          }));
+        }
         if (parsed.reminders)   this.state.reminders   = parsed.reminders;
       }
     } catch(e) {}
@@ -147,6 +155,14 @@ const VM = {
       this.state.mood.weekData       = [null, null, null, null, null, null, null];
       this.state.mood.selected       = null;
       this.state.mood.note           = '';
+      // Resetear historial semanal de medicamentos
+      if (this.state.medications) {
+        this.state.medications.forEach(m => {
+          m.weekHistory  = [false, false, false, false, false, false, false];
+          m.takenCount   = 0;
+          m.takenTimes   = [];
+        });
+      }
 
       // Guardar estado reseteado y marcar el lunes procesado
       this.save(uid);
