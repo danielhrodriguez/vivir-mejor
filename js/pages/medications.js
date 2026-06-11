@@ -348,19 +348,19 @@ function buildMedHistory(meds) {
       checkColor  = 'transparent';
     }
 
-    return \`
+    return `
       <div style="text-align:center;min-width:36px">
         <div style="font-size:10px;
-                    color:\${isToday ? 'var(--sage)' : 'var(--text-light)'};
-                    font-weight:\${isToday ? '800' : 'normal'};
-                    margin-bottom:4px">\${d}</div>
+                    color:${isToday ? 'var(--sage)' : 'var(--text-light)'};
+                    font-weight:${isToday ? '800' : 'normal'};
+                    margin-bottom:4px">${d}</div>
         <div style="width:32px;height:32px;border-radius:50%;margin:0 auto;
-                    background:\${bgColor};border:\${borderStyle};
+                    background:${bgColor};border:${borderStyle};
                     display:flex;align-items:center;justify-content:center;
-                    font-size:16px;color:\${checkColor};font-weight:700">
-          \${done ? '✓' : ''}
+                    font-size:16px;color:${checkColor};font-weight:700">
+          ${done ? '✓' : ''}
         </div>
-      </div>\`;
+      </div>`;
   }).join('');
 }
 
