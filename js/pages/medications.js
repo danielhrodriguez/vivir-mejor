@@ -314,54 +314,41 @@ function getMedSummary(meds) {
 function buildMedHistory(meds) {
   const days = ['L','M','X','J','V','S','D'];
   const todayIdx = (new Date().getDay() + 6) % 7;
+  let html = '';
 
-  return days.map((d, i) => {
-    const isFuture  = i > todayIdx;
-    const isToday   = i === todayIdx;
-    const isPast    = i < todayIdx;
+  for (let i = 0; i < 7; i++) {
+    const d        = days[i];
+    const isFuture = i > todayIdx;
+    const isToday  = i === todayIdx;
+    const isPast   = i < todayIdx;
 
     let done = false;
     if (isToday) {
-      done = meds.some(m => (m.takenCount || 0) > 0);
+      done = meds.some(function(m) { return (m.takenCount || 0) > 0; });
     } else if (isPast) {
-      done = meds.some(m => m.weekHistory && m.weekHistory[i]);
+      done = meds.some(function(m) { return m.weekHistory && m.weekHistory[i]; });
     }
 
-    // Estilos según estado
-    let bgColor, borderStyle, textColor, checkColor;
+    var bgColor, borderStyle, checkColor, dayColor, dayWeight;
     if (done) {
-      bgColor     = 'var(--sage)';
-      borderStyle = 'none';
-      checkColor  = 'white';
+      bgColor = 'var(--sage)'; borderStyle = 'none'; checkColor = 'white';
     } else if (isToday) {
-      bgColor     = 'transparent';
-      borderStyle = '2.5px solid var(--sage)';
-      checkColor  = 'transparent';
+      bgColor = 'transparent'; borderStyle = '2.5px solid var(--sage)'; checkColor = 'transparent';
     } else if (isFuture) {
-      bgColor     = 'transparent';
-      borderStyle = '1.5px dashed #E4EDE8';
-      checkColor  = 'transparent';
+      bgColor = 'transparent'; borderStyle = '1.5px dashed #E4EDE8'; checkColor = 'transparent';
     } else {
-      // Día pasado sin toma
-      bgColor     = '#E4EDE8';
-      borderStyle = 'none';
-      checkColor  = 'transparent';
+      bgColor = '#E4EDE8'; borderStyle = 'none'; checkColor = 'transparent';
     }
+    dayColor  = isToday ? 'var(--sage)' : 'var(--text-light)';
+    dayWeight = isToday ? '800' : 'normal';
 
-    return `
-      <div style="text-align:center;min-width:36px">
-        <div style="font-size:10px;
-                    color:${isToday ? 'var(--sage)' : 'var(--text-light)'};
-                    font-weight:${isToday ? '800' : 'normal'};
-                    margin-bottom:4px">${d}</div>
-        <div style="width:32px;height:32px;border-radius:50%;margin:0 auto;
-                    background:${bgColor};border:${borderStyle};
-                    display:flex;align-items:center;justify-content:center;
-                    font-size:16px;color:${checkColor};font-weight:700">
-          ${done ? '✓' : ''}
-        </div>
-      </div>`;
-  }).join('');
+    html += '<div style="text-align:center;min-width:36px">'
+          + '<div style="font-size:10px;color:' + dayColor + ';font-weight:' + dayWeight + ';margin-bottom:4px">' + d + '</div>'
+          + '<div style="width:32px;height:32px;border-radius:50%;margin:0 auto;background:' + bgColor + ';border:' + borderStyle + ';display:flex;align-items:center;justify-content:center;font-size:16px;color:' + checkColor + ';font-weight:700">'
+          + (done ? '✓' : '')
+          + '</div></div>';
+  }
+  return html;
 }
 
 // ── Registro de toma ──────────────────────────────────────────────
