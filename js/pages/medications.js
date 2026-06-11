@@ -492,10 +492,10 @@ function updateTimePickers(existingTimes = null) {
 function saveMed() {
   const name = document.getElementById('med-name').value.trim();
   if (!name) {
-    setFieldError('form-group', 'Ingresá el nombre del medicamento');
     const nameInput = document.getElementById('med-name');
     nameInput.style.borderColor = 'var(--peach)';
     nameInput.focus();
+    showToast('⚠️ Ingresá el nombre del medicamento');
     return;
   }
 
